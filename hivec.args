@@ -3,15 +3,24 @@ project ".."
 
 # source path, where the headers should be, '__proj__' is replaced by the project path.
 # the source path replaces every '__src__' in the other paths
-source "__proj__\compf\src"
+source "__proj__\comp\src"
 
 # ouput path, where the headers should go, '__proj__' is replaced by the project path
 # the output path replaces every '__out__' in the other paths
-output "__proj__\output"
+output "F:\Assets\CppLibs\comp"
 
-include_dir "__out__\include\compf"
+include_dir "__out__\include\comp"
 
 # headers with their path matching the given REGEX EXP (note that it does not use glob) are ignored.
 # just "pch.h" will ignore every file named "pch.h" or has "pch.h" in it's filepath
-whitelist \w+?compf\w+?.h
+whitelist "comp.h"
 
+
+define:out64 "F:\Assets\visual studio\Components File\x64"
+define:out32 "F:\Assets\visual studio\Components File\Win32"
+define:lib "comp.lib"
+
+move "__out64__\Debug\__lib__"  "__out__\lib\comp_64x-d.lib" /o /s
+move "__out64__\Release\__lib__"  "__out__\lib\comp_64x.lib" /o /s
+move "__out32__\Debug\__lib__"  "__out__\lib\comp_32x-d.lib" /o /s
+move "__out32__\Release\__lib__"  "__out__\lib\comp_32x.lib" /o /s

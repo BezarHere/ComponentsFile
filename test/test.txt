@@ -1,0 +1,7 @@
+data {
+	this = 32
+	one = 4
+	on = 12
+	me = 65
+
+}
