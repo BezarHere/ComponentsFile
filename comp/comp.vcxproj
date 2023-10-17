@@ -134,6 +134,8 @@ hivec hivec.args</Command>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -161,6 +163,8 @@ hivec hivec.args</Command>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -186,7 +190,7 @@ hivec hivec.args</Command>
     <ClInclude Include="src\comp.h" />
     <ClInclude Include="src\interpter.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\tokens.h" />
+    <ClInclude Include="src\tk.h" />
     <ClInclude Include="src\utils.h" />
   </ItemGroup>
   <ItemGroup>

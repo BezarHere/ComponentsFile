@@ -20,7 +20,7 @@ define:out64 "F:\Assets\visual studio\Components File\x64"
 define:out32 "F:\Assets\visual studio\Components File\Win32"
 define:lib "comp.lib"
 
-move "__out64__\Debug\__lib__"  "__out__\lib\comp_64x-d.lib" /o /s
-move "__out64__\Release\__lib__"  "__out__\lib\comp_64x.lib" /o /s
-move "__out32__\Debug\__lib__"  "__out__\lib\comp_32x-d.lib" /o /s
-move "__out32__\Release\__lib__"  "__out__\lib\comp_32x.lib" /o /s
+move "__out64__\Debug\__lib__"  "__out__\lib\comp_x64-d.lib" /o /s
+move "__out64__\Release\__lib__"  "__out__\lib\comp_x64.lib" /o /s
+move "__out32__\Debug\__lib__"  "__out__\lib\comp_x32-d.lib" /o /s
+move "__out32__\Release\__lib__"  "__out__\lib\comp_x32.lib" /o /s

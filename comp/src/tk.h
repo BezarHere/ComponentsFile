@@ -1,4 +1,5 @@
 #pragma once
+#include "utils.h"
 #include <array>
 #include <string>
 
@@ -91,8 +92,8 @@ enum class TkType : short
 
 	EscapedSequnce,
 
-	Keyword,
-	KW_Proc = Keyword,
+	Keywords, // marker type, shouldn't apear
+	KW_Proc = Keywords,
 
 	KW_If,
 	KW_Elif,
@@ -105,6 +106,9 @@ enum class TkType : short
 	KW_Acos,
 	KW_Sign,
 
+
+	Operators, // marker type, shouldn't apear
+
 	ParenthseseOpen = '(',
 	ParenthseseClose = ')',
 	SqbracketOpen = '[',
@@ -113,7 +117,7 @@ enum class TkType : short
 	BracketClose = '}',
 
 	ExclamationMark = '!',
-	Bool = '!!',
+	//Bool = '!!',
 
 	Ambersand = '&',
 	And = '&&',
@@ -132,44 +136,60 @@ enum class TkType : short
 	Assign = '==',
 	Equal = '=',
 
-	Dec = '--',
+	//Dec = '--',
 	Minus = '-',
 
-	Inc = '++',
+	//Inc = '++',
 	Plus = '+',
 
 	Star = '*',
 
 	FSlash = '/',
 
-	BSlash = '\\',
+
 };
 
 CINLINE TkType get_keyword_tk(const size_t index)
 {
 	if (index == InvalidIndex)
 		return TkType::Identifier;
-	return TkType((size_t)TkType::Keyword + index);
+	return TkType((size_t)TkType::Keywords + index);
 }
+
+struct SrcPos
+{
+	static constexpr uint16_t nPos = (uint16_t)-1;
+	uint16_t line, colom;
+};
 
 struct Tk
 {
 	Tk()
 	{}
 
-	Tk(TkType t, std::string s)
-		: type{ t }, str{ s } {}
+	Tk(TkType t, std::string s, SrcPos p)
+		: type{ t }, str{ s }, pos{p} {}
 
 	TkType type = TkType::Unknown;
 	std::string str{};
+	SrcPos pos{ SrcPos::nPos, SrcPos::nPos };
 };
+
+namespace std
+{
+	FORCEINLINE std::string to_string(SrcPos _Val)
+	{
+		return std::to_string(_Val.line) + ":" + std::to_string(_Val.colom);
+	}
+}
 
 typedef std::vector<Tk> TkPage_t;
 
 namespace std
 {
-	std::ostream &operator<<(std::ostream &stream, const Tk &tk)
+	FORCEINLINE std::ostream &operator<<(std::ostream &stream, const Tk &tk)
 	{
-		return stream << (int)tk.type << ": \"" << tk.str << "\"\n";
+		return stream << "{ " << tk.pos.line << ", " << tk.pos.colom << "} " << (int)tk.type << ": \"" << tk.str << "\"\n";
 	}
+
 }

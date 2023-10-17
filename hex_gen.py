@@ -6,3 +6,6 @@ for i in range(b, e+1):
 		print('\n')
 	else:
 		print('0\n')
+
+import os
+os.getcwd()

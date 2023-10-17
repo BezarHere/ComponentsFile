@@ -1,8 +1,30 @@
 #include "pch.h"
 #include "comp.h"
-#include "utils.h"
-#include "tokens.h"
+#include "ast.h"
+#include "tk.h"
 
+struct TkWriter
+{
+	inline TkWriter()
+	{
+		tks.reserve(1024);
+	}
+
+	inline void push_back(const Tk &tk)
+	{
+		tks.push_back(tk);
+		pos.colom += (uint32_t)tk.str.length();
+	}
+
+	inline void push_back(const TkType t, const std::string &str)
+	{
+		tks.emplace_back(t, str, pos);
+		pos.colom += (uint32_t)str.length();
+	}
+
+	TkPage_t tks{ };
+	SrcPos pos{ 0, 0 };
+};
 
 long fsize(FILE *_f)
 {
@@ -33,13 +55,11 @@ std::string read_all_text(const std::string &path)
 
 TkPage_t detokenize(const std::string &src)
 {
-	TkPage_t tks{};
-	tks.reserve(1024);
+	TkWriter tks;
 
 	for (StringReader reader{ src }; reader;)
 	{
 		const char c = reader.read();
-		
 
 		if (is_letter(c) || c == '_')
 		{
@@ -57,7 +77,7 @@ TkPage_t detokenize(const std::string &src)
 			const size_t n = reader.get_index() - anchor;
 			const std::string s = reader.str(anchor, n);
 
-			tks.emplace_back(get_keyword_tk(keyword_index(reader.current(), n)), s);
+			tks.push_back(get_keyword_tk(keyword_index(reader.current(), n)), s);
 			continue;
 		}
 
@@ -93,7 +113,7 @@ TkPage_t detokenize(const std::string &src)
 
 			const size_t n = reader.get_index() - anchor;
 
-			tks.emplace_back(TkType((int)TkType::Number + (int)base), reader.str(anchor, n));
+			tks.push_back(TkType((int)TkType::Number + (int)base), reader.str(anchor, n));
 			continue;
 		}
 
@@ -103,7 +123,7 @@ TkPage_t detokenize(const std::string &src)
 			if (!reader.march())
 				bite::raise("Escaped EOF");
 			
-			tks.emplace_back(TkType::EscapedSequnce, reader.str(anchor, 2));
+			tks.push_back(TkType::EscapedSequnce, reader.str(anchor, 2));
 			continue;
 		}
 
@@ -132,7 +152,14 @@ TkPage_t detokenize(const std::string &src)
 			
 			const size_t n = reader.get_index() - anchor;
 
-			tks.emplace_back(is_newline ? TkType::Newline : TkType::Whitespace, reader.str(anchor, n));
+
+			tks.push_back(is_newline ? TkType::Newline : TkType::Whitespace, reader.str(anchor, n));
+
+			if (is_newline)
+			{
+				tks.pos.line += (uint32_t)n;
+				tks.pos.colom = 0;
+			}
 			continue;
 		}
 
@@ -140,15 +167,15 @@ TkPage_t detokenize(const std::string &src)
 		{
 			const size_t anchor = reader.get_index() - 1;
 			const int id = (int(c) << 8) + (int)reader.read();
-			tks.emplace_back((TkType)id, reader.str(anchor, 2));
+			tks.push_back((TkType)id, reader.str(anchor, 2));
 		}
 		else
 		{
-			tks.emplace_back((TkType)int(c), std::string{ c });
+			tks.push_back((TkType)int(c), std::string{ c });
 		}
 	}
 
-	return tks;
+	return tks.tks;
 }
 
 namespace comp
@@ -162,11 +189,13 @@ namespace comp
 
 	std::vector<Value> read(const std::string &src)
 	{
-		auto v = detokenize(src);
+		TkPage_t v = detokenize(src);
 
 		std::cout << v.size() << '\n';
 		for (const auto &p : v)
 			std::cout << p << std::endl;
+
+		AbstractSynTree tree{ v };
 
 		return std::vector<Value>();
 	}
