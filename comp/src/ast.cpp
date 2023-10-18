@@ -30,11 +30,18 @@ FORCEINLINE size_t next_index_explicit_tk_lined(const_Ptk tk, const size_t n)
 	return InvalidIndex;
 }
 
-
-FORCEINLINE std::vector<SynNode> _parse_expression(const_Ptk tk, const size_t n)
+FORCEINLINE span<size_t> mark_expression_start_tk_indexes(const_Ptk tk, const size_t n)
 {
-	std::vector<SynNode> nodes{};
+	std::vector<size_t> ind;
+	ind.reserve(1024);
 
+
+
+	return span<size_t>{ ind };
+}
+
+FORCEINLINE void _parse_expression(const_Ptk tk, const size_t n, SynState &state)
+{
 	for (size_t i = 0; i < n; i++)
 	{
 		const Tk &t = tk[ i ];
@@ -77,12 +84,10 @@ FORCEINLINE std::vector<SynNode> _parse_expression(const_Ptk tk, const size_t n)
 
 	}
 
-	return nodes;
 }
 
-FORCEINLINE std::vector<SynNode> _parse_block(const_Ptk tk, const size_t n)
+FORCEINLINE void _parse_block(const_Ptk tk, const size_t n, SynState &state)
 {
-	std::vector<SynNode> nodes{};
 	for (size_t i = 0; i < n; i++)
 	{
 		const Tk &t = tk[ i ];
@@ -123,8 +128,6 @@ FORCEINLINE std::vector<SynNode> _parse_block(const_Ptk tk, const size_t n)
 		}
 
 	}
-
-	return nodes;
 }
 
 

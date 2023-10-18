@@ -65,6 +65,25 @@ namespace comp
 		} m_union;
 	};
 
+	class CompProcedure
+	{
+	public:
+		static constexpr size_t MaxParamtersCount = 8;
+
+
+	private:
+		int m_pcount;
+		std::string m_name;
+		ValueType m_ret_type;
+		std::array<ValueType, MaxParamtersCount> m_ptypes;
+		std::shared_ptr<int[]> m_code;
+	};
+
+	struct ComponentFile
+	{
+		std::unordered_map<std::string, Value> values;
+		std::vector<CompProcedure> procs;
+	};
 
 
 	COMP_LINK std::vector<Value> decompile(const CompileCompfBuffer_t &bin);

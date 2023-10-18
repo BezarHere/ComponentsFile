@@ -99,3 +99,11 @@ public:
 private:
 	SynNode m_root;
 };
+
+typedef std::stack<comp::Value, std::vector<comp::Value>> ValueStack_t;
+struct SynState
+{
+	std::vector<SynNode> nodes;
+	ValueStack_t consts_stack;
+};
+
